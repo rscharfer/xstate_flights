@@ -5364,7 +5364,8 @@ var _xstate = require("xstate");
 var tripField = document.querySelector("#trip");
 var returnField = document.querySelector("#returnDate");
 var tripDate = document.querySelector("#tripDate");
-var submitButton = document.querySelector("#submit"); // two states
+var submitButton = document.querySelector("#submit");
+var userMessage = document.querySelector('#message'); // two states
 // editing : button is enabled, no message
 // submitted : button is disabled, there is a message
 // add the two states
@@ -5416,7 +5417,8 @@ var machine = (0, _xstate.createMachine)({
     submitted: {
       entry: function entry() {
         return console.log("in submitted state");
-      }
+      },
+      type: 'final'
     }
   }
 });
@@ -5437,8 +5439,11 @@ service.onTransition(function (state) {
   if (canSubmit) submitButton.removeAttribute("disabled");else submitButton.setAttribute("disabled", true);
 
   if (state.value === "submitted") {
-    // show message
-    console.log("submitted!");
+    if (state.context.trip === "One Way") {
+      userMessage.innerHTML = "You have booked a flight for ".concat(state.context.tripDate, "!");
+    } else {
+      userMessage.innerHTML = "You have booked a flight for ".concat(state.context.tripDate, " returning on ").concat(state.context.returnDate, "!");
+    }
   }
 });
 tripField.addEventListener("change", function (e) {

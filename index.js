@@ -4,6 +4,7 @@ const tripField = document.querySelector("#trip");
 const returnField = document.querySelector("#returnDate");
 const tripDate = document.querySelector("#tripDate");
 const submitButton = document.querySelector("#submit");
+const userMessage = document.querySelector('#message');
 
 // two states
 // editing : button is enabled, no message
@@ -48,6 +49,7 @@ const machine = createMachine({
     },
     submitted: {
       entry: () => console.log("in submitted state"),
+      type: 'final'
     },
   },
 });
@@ -71,8 +73,13 @@ service.onTransition((state) => {
   else submitButton.setAttribute("disabled", true);
 
   if (state.value === "submitted") {
-    // show message
-    console.log("submitted!");
+    if (state.context.trip === "One Way"){
+      userMessage.innerHTML = `You have booked a flight for ${state.context.tripDate}!`
+    }
+    else {
+      userMessage.innerHTML = `You have booked a flight for ${state.context.tripDate} returning on ${state.context.returnDate}!`
+    }
+    
   }
 });
 
